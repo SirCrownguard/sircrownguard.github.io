@@ -12,7 +12,7 @@
   <!-- Material Icons -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <!-- Reference the CSS in static folder using Flask's url_for -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body class="light-theme">
   <header>
@@ -73,13 +73,13 @@
   <footer>
     <div class="footer-content">
     <a href="https://github.com/SirCrownguard/Converty-Web" target="_blank" class="github-link">
-        <img src="static/GitHub_Logo.svg" alt="Source Code" class="github-icon">
+        <img src="GitHub_Logo.svg" alt="Source Code" class="github-icon">
     </a>
     <p>© 2025 Converty</p>
   </div>
   </footer>
 
   <!-- Reference the JS in static folder using Flask's url_for -->
-  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script src="script.js"></script>
 </body>
 </html>
