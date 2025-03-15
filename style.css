@@ -27,6 +27,8 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 header, footer {
   background-color: var(--card-light);
@@ -282,13 +284,12 @@ footer {
   justify-content: center;
   align-items: center;
   gap: 10px;
-  height: 30px;
   background-color: var(--card-light);
   color: var(--text-light);
-  position: static;
   width: 100%;
   margin-top: auto;
   bottom: 0;
+  padding: 0.5rem 1rem;
 }
 
 .footer-content {
@@ -342,5 +343,13 @@ footer p {
   }
   .btn {
     padding: 0.6rem 1rem;
+  }
+  #tabPdfToPptx .old-color,
+  #tabPdfToPptx .new-color {
+    content: "PDF › PPTX"; /* pseudo-element kullanmak isterseniz, ya da JS ile kısaltabilirsiniz. */
+  }
+  #tabPptxToPdf .old-color,
+  #tabPptxToPdf .new-color {
+    content: "PPTX › PDF";
   }
 }
