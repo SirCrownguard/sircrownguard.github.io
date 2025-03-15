@@ -160,6 +160,7 @@ main {
   -ms-user-select: none;     /* IE/Edge eski sürümler */
   user-select: none;
   -webkit-user-drag: none;
+  -webkit-tap-highlight-color: transparent
 }
 .tab {
   flex: 1;
