@@ -41,7 +41,7 @@ const langData = {
   tr: {
     tabPdfToPptx: "PDF › PPTX",
     tabPptxToPdf: "PPTX › PDF",
-    uploadButton: "Dosya yükleyiniz.",
+    uploadButton: "Dosya yükleyiniz",
     uploadText: "PDF dosyanızı sürükleyin veya seçin",
     uploadSubtext: "Maksimum dosya boyutu: 100MB",
     noFileAlert: "Lütfen geçerli dosya seçiniz.",
@@ -61,7 +61,7 @@ const langData = {
   en: {
     tabPdfToPptx: "PDF › PPTX",
     tabPptxToPdf: "PPTX › PDF",
-    uploadButton: "Upload a file.",
+    uploadButton: "Upload a file",
     uploadText: "Drag or select your PDF file",
     uploadSubtext: "Maximum file size: 100MB",
     noFileAlert: "Please select a valid file.",
@@ -81,7 +81,7 @@ const langData = {
   zh: {
     tabPdfToPptx: "PDF › PPTX",
     tabPptxToPdf: "PPTX › PDF",
-    uploadButton: "请上传文件。",
+    uploadButton: "请上传文件",
     uploadText: "拖放或选择您的PDF文件",
     uploadSubtext: "最大文件大小: 100MB",
     noFileAlert: "请选择有效的文件。",
@@ -101,7 +101,7 @@ const langData = {
   es: {
     tabPdfToPptx: "PDF › PPTX",
     tabPptxToPdf: "PPTX › PDF",
-    uploadButton: "Suba un archivo.",
+    uploadButton: "Suba un archivo",
     uploadText: "Arrastra o selecciona tu archivo PDF",
     uploadSubtext: "Tamaño máximo: 100MB",
     noFileAlert: "Por favor, selecciona un archivo válido.",
@@ -121,7 +121,7 @@ const langData = {
   pt: {
     tabPdfToPptx: "PDF › PPTX",
     tabPptxToPdf: "PPTX › PDF",
-    uploadButton: "Carregue um arquivo.",
+    uploadButton: "Carregue um arquivo",
     uploadText: "Arraste ou selecione seu arquivo PDF",
     uploadSubtext: "Tamanho máximo: 100MB",
     noFileAlert: "Por favor, selecione um arquivo válido.",
@@ -141,7 +141,7 @@ const langData = {
   hi: {
     tabPdfToPptx: "PDF › PPTX",
     tabPptxToPdf: "PPTX › PDF",
-    uploadButton: "एक फ़ाइल अपलोड करें。",
+    uploadButton: "एक फ़ाइल अपलोड करें",
     uploadText: "अपनी PDF फ़ाइल खींचें या चुनें",
     uploadSubtext: "अधिकतम फ़ाइल आकार: 100MB",
     noFileAlert: "कृपया एक वैध फ़ाइल चुनें।",
@@ -177,14 +177,24 @@ function updateLanguage(lang) {
   document.getElementById("tabPptxToPdf").textContent = langData[lang].tabPptxToPdf;
   document.getElementById("uploadText").textContent = langData[lang].uploadText;
   document.getElementById("uploadSubtext").textContent = langData[lang].uploadSubtext;
-  if (convertState !== 3 && convertState !== 5) {
-    if (!conversionComplete) {
-      updateConvertButton(2);
-    } else {
-      updateConvertButton(4);
-    }
+  if (uploadedFiles.length === 0) {
+    updateConvertButton(1);
+  } else if (!conversionComplete) {
+    updateConvertButton(2);
+  } else {
+    updateConvertButton(4);
   }
+  
   updateResultPageText();
+}
+
+function moveIndicator(activeTab) {
+  const indicator = document.querySelector(".tab-indicator");
+  if (!activeTab || !indicator) return;
+  const left = activeTab.offsetLeft;
+  const width = activeTab.offsetWidth;
+  indicator.style.left = left + "px";
+  indicator.style.width = width + "px";
 }
 
 function updateResultPageText() {
@@ -261,20 +271,72 @@ languageSwitch.addEventListener("click", (e) => {
   e.stopPropagation();
   languageMenu.classList.toggle("active");
 });
-document.addEventListener("click", (e) => {
-  if (!languageSwitch.contains(e.target) && !languageMenu.contains(e.target)) {
-    languageMenu.classList.remove("active");
-  }
-});
-languageMenu.querySelectorAll("button").forEach(btn => {
-  btn.addEventListener("click", () => {
-    let selected = btn.getAttribute("data-lang");
-    sessionStorage.setItem("selectedLanguage", selected);
-    updateLanguage(selected);
-    languageMenu.classList.remove("active");
-  });
-});
+document.addEventListener("DOMContentLoaded", () => {
+  // 1) Sayfa ilk yüklendiğinde dil ayarını yap
+  updateLanguage(currentLang);
+  const tabs = document.querySelectorAll(".tab");
+  const initialActive = document.querySelector(".tab.active");
+  moveIndicator(initialActive);
 
+
+  // 2) Sekme (tab) ve indicator değişkenlerini al
+  const indicator = document.querySelector(".tab-indicator");
+
+  // 3) İlk yüklemede aktif sekmeye göre indicator'ı konumlandır
+  moveIndicator(initialActive);
+
+  // 4) Sekme tıklanınca aktiflik değişsin ve indicator kaydırılsın
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      if (tab.classList.contains("active")) return; // Zaten aktifse geç
+      const oldActive = document.querySelector(".tab.active");
+      if (oldActive) {
+        oldActive.classList.remove("active");
+      }
+      tab.classList.add("active");
+      moveIndicator(document.querySelector(".tab.active"));
+    });
+  });
+
+  // Indicator'ı soldan sağa kaydıran fonksiyon
+  function moveIndicator(activeTab) {
+    if (!activeTab || !indicator) return;
+    const left = activeTab.offsetLeft;
+    const width = activeTab.offsetWidth;
+    indicator.style.left = left + "px";
+    indicator.style.width = width + "px";
+  }
+
+  // 5) Dil menüsündeki butonlar
+  languageMenu.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      let selected = btn.getAttribute("data-lang");
+      sessionStorage.setItem("selectedLanguage", selected);
+
+      // Dil güncelle
+      updateLanguage(selected);
+      languageMenu.classList.remove("active");
+
+      // Metinler değiştiyse sekme genişliği değişebilir;
+      // o yüzden indicator'ı tekrar güncelle
+      const activeTab = document.querySelector(".tab.active");
+      moveIndicator(activeTab);
+    });
+  });
+
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      if (tab.classList.contains("active")) return; // Zaten aktifse geç
+      const oldActive = document.querySelector(".tab.active");
+      if (oldActive) {
+        oldActive.classList.remove("active");
+      }
+      tab.classList.add("active");
+      moveIndicator(tab);
+    });
+  });
+  
+});
 // Tema değiştirme olayı
 themeSwitch.addEventListener("click", () => {
   document.body.classList.toggle("dark-theme");
@@ -300,6 +362,7 @@ tabPdfToPptx.addEventListener("click", () => {
   fileInput.accept = ".pdf";
   resetConversionUI();
   updateLanguage(currentLang);
+  moveIndicator(document.querySelector(".tab.active"));
 });
 tabPptxToPdf.addEventListener("click", () => {
   conversionType = "pptx_to_pdf";
@@ -308,6 +371,7 @@ tabPptxToPdf.addEventListener("click", () => {
   fileInput.accept = ".pptx";
   resetConversionUI();
   updateLanguage(currentLang);
+  moveIndicator(document.querySelector(".tab.active"));
 });
 
 // Drag & Drop desteği
