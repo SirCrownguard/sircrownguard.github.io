@@ -397,9 +397,6 @@ footer p {
 
   /* DOSYA YÜKLEME ALANI */
   .upload-area {
-    padding: 1rem !important;
-    margin: 0.8rem 0 !important;
-    border-width: 1.5px;
     width: calc(100% - 10px);
     box-sizing: border-box;
   }
