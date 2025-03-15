@@ -379,7 +379,7 @@ footer p {
   /* DOSYA YÜKLEME ALANI */
   .upload-area {
     width: calc(100% - 10px);
-    height-top: 7px;
+    height-top: 15px;
     box-sizing: border-box;
   }
 
