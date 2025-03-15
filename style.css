@@ -385,7 +385,7 @@ footer p {
   }
 
   .upload-text {
-    font-size: 0.9rem !important;
+    font-size: clamp(0.9rem, 4vw, 1rem);
     margin-bottom: 0.2rem;
     line-height: 1.2;
     word-break: break-word;
@@ -407,9 +407,10 @@ footer p {
   }
 
   .conversion-container {
-    width: calc(100% - 32px) !important; /* Her iki yandan 16px boşluk */
-    padding: 1.2rem !important;
-    margin: 0 16px !important; /* Yanlardan boşluk için */
+    width: calc(100% - 32px) !important; 
+    margin: 0 16px !important; /* Yan boşluk garantisi */
+    padding: 1.2rem !important; 
+    max-width: none; /* Dar ekranlarda genişlik esnek */
   }
 
   /* BUTONLAR */
