@@ -54,8 +54,8 @@ const langData = {
     resultThankYou: "Converty'yi tercih ettiğiniz için teşekkür ederiz!",
     resultConversionComplete: "Dönüştürme işleminiz tamamlandı.",
     resultDownloadInstruction: "Eğer indirme başlamadıysa <span class='link' id='downloadLink'>buraya</span> tıklayın.",
-    resultConvertAgain: "Yeniden dönüştür"
-    ,resultRedirecting: "Ana sayfaya yönlendiriliyorsunuz, {count} saniye kaldı...",
+    resultConvertAgain: "Yeniden dönüştür",
+    resultRedirecting: "Ana sayfaya yönlendiriliyorsunuz, {count} saniye kaldı...",
     zipNotFoundError: "ZIP dosya adı alınamadı:"
   },
   en: {
@@ -173,10 +173,22 @@ if (sessionStorage.getItem("selectedLanguage") && langData[sessionStorage.getIte
 // UI güncelleme fonksiyonları
 function updateLanguage(lang) {
   currentLang = lang;
-  document.getElementById("tabPdfToPptx").textContent = langData[lang].tabPdfToPptx;
-  document.getElementById("tabPptxToPdf").textContent = langData[lang].tabPptxToPdf;
-  document.getElementById("uploadText").textContent = langData[lang].uploadText;
-  document.getElementById("uploadSubtext").textContent = langData[lang].uploadSubtext;
+  
+  // 1. Tüm data-lang-key özellikli elementleri güncelle
+  document.querySelectorAll('[data-lang-key]').forEach(element => {
+    const key = element.getAttribute('data-lang-key');
+    if (langData[lang] && langData[lang][key]) {
+      element.textContent = langData[lang][key];
+    }
+  });
+
+  // 2. Özel durumlar (sekme animasyonu)
+  const activeTab = document.querySelector(".tab.active");
+  requestAnimationFrame(() => {
+    moveIndicator(activeTab);
+  });
+
+  // 3. Buton durumu
   if (uploadedFiles.length === 0) {
     updateConvertButton(1);
   } else if (!conversionComplete) {
@@ -184,8 +196,12 @@ function updateLanguage(lang) {
   } else {
     updateConvertButton(4);
   }
-  
+
+  // 4. Sonuç sayfası metinleri
   updateResultPageText();
+
+  // 5. SessionStorage'a kaydet
+  sessionStorage.setItem("selectedLanguage", lang);
 }
 
 function moveIndicator(activeTab) {
@@ -266,10 +282,11 @@ const tabPptxToPdf = document.getElementById("tabPptxToPdf");
 const fileInput = document.getElementById("fileInput");
 const startConvertBtn = document.getElementById("startConvertBtn");
 
-// Dil menüsü olayları
-languageSwitch.addEventListener("click", (e) => {
+// Dil menüsü için: languageSwitch'a tıklandığında menüyü toggle et
+document.getElementById("languageSwitch").addEventListener("click", (e) => {
   e.stopPropagation();
-  languageMenu.classList.toggle("active");
+  const menu = document.getElementById("languageMenu");
+  menu.classList.toggle("active"); // Aç/kapa
 });
 document.addEventListener("DOMContentLoaded", () => {
   // 1) Sayfa ilk yüklendiğinde dil ayarını yap
@@ -306,11 +323,6 @@ document.addEventListener("DOMContentLoaded", () => {
     indicator.style.left = left + "px";
     indicator.style.width = width + "px";
   }
-  document.addEventListener("click", (e) => {
-    if (!languageSwitch.contains(e.target) && !languageMenu.contains(e.target)) {
-      languageMenu.classList.remove("active");
-    }
-  });
   // 5) Dil menüsündeki butonlar
   languageMenu.querySelectorAll("button").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -341,6 +353,59 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   
 });
+// DOM yüklendiğinde çalışacak diğer olaylar
+document.addEventListener("DOMContentLoaded", () => {
+  // Sayfa ilk yüklendiğinde dil ayarını yap
+  updateLanguage(currentLang);
+  
+  // Eğer kaydedilmiş dil varsa, ilgili butonu görsel olarak seçili yap
+  const savedLangButton = languageMenu.querySelector(`button[data-lang="${currentLang}"]`);
+  if (savedLangButton) {
+    savedLangButton.classList.add("selected");
+  }
+
+  const tabs = document.querySelectorAll(".tab");
+  const initialActive = document.querySelector(".tab.active");
+  moveIndicator(initialActive);
+
+  // Sekme (tab) olayları ve indicator ayarı
+  const indicator = document.querySelector(".tab-indicator");
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      if (tab.classList.contains("active")) return;
+      const oldActive = document.querySelector(".tab.active");
+      if (oldActive) {
+        oldActive.classList.remove("active");
+      }
+      tab.classList.add("active");
+      moveIndicator(tab);
+    });
+  });
+
+  // Dil menüsündeki butonlar: tıklandığında dil güncelle, menüyü kapat ve seçimi görsel olarak işaretle
+  languageMenu.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      let selected = btn.getAttribute("data-lang");
+      sessionStorage.setItem("selectedLanguage", selected);
+      updateLanguage(selected);
+      languageMenu.classList.remove("active");
+      // Tüm butonlardan 'selected' sınıfını kaldırıp, tıklanan butona ekle
+      languageMenu.querySelectorAll("button").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+
+      const activeTab = document.querySelector(".tab.active");
+      moveIndicator(activeTab);
+    });
+  });
+});
+
+// Menü dışında bir yere tıklandığında menüyü kapat
+document.addEventListener("click", (e) => {
+  if (!languageSwitch.contains(e.target) && !languageMenu.contains(e.target)) {
+    languageMenu.classList.remove("active");
+  }
+});
+
 // Tema değiştirme olayı
 themeSwitch.addEventListener("click", () => {
   document.body.classList.toggle("dark-theme");
