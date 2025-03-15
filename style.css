@@ -421,10 +421,6 @@ footer p {
   }
 
   .conversion-container {
-    padding: 1.2rem 0.8rem !important;
-    margin: 0 8px;
-    min-height: auto;
-    width: calc(100% - 16px) !important;
     box-sizing: border-box;
   }
 
