@@ -433,11 +433,10 @@ footer p {
   }
 
   .conversion-container {
-    padding: 1.2rem 0.8rem !important;
-    margin: 0 8px;
-    min-height: auto;
-    width: calc(100% - 16px) !important;
-    box-sizing: border-box;
+    width: calc(100% - 32px) !important; /* Her iki yandan 16px boşluk */
+    padding: 1.2rem !important;
+    margin: 0 16px !important; /* Yanlardan boşluk için */
+    max-width: none; /* Maksimum genişlik kısıtlamasını kaldır */
   }
 
   /* BUTONLAR */
