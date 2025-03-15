@@ -285,8 +285,9 @@ footer {
   height: 30px;
   background-color: var(--card-light);
   color: var(--text-light);
-  position: fixed;
+  position: static;
   width: 100%;
+  margin-top: auto;
   bottom: 0;
 }
 
@@ -318,7 +319,8 @@ footer p {
   /* İçerik alanı daha dar ekranlarda biraz daha dar olsun */
   .conversion-container {
     padding: 1rem;
-    margin: 0 1rem;
+    margin: 1rem auto;
+    max-width: 95%;
   }
   /* Sekme alanında, sekmelerin sığmaması durumunda alt satıra geçebilmesi için */
   .tabs {
@@ -331,11 +333,14 @@ footer p {
   }
   /* Dosya yükleme alanındaki padding'i optimize edin */
   .upload-area {
-    padding: 2rem 1rem;
+    padding: 1.5rem;
   }
   /* Görselleri responsive yapmak için */
   img {
     max-width: 100%;
     height: auto;
+  }
+  .btn {
+    padding: 0.6rem 1rem;
   }
 }
