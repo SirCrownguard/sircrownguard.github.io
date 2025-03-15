@@ -2,17 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, shrink-to-fit=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Converty | PDF - PPTX Converter</title>
   <!-- Google Fonts -->
   <link
     href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap"
-    rel="stylesheet"
-  >
+    rel="stylesheet">
   <!-- Material Icons -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <!-- Reference the CSS in static folder using Flask's url_for -->
-  <link rel="stylesheet" href="style.css">
+  <!-- CSS dosyası -->
+  <link rel="stylesheet" href=style.css>
 </head>
 <body class="light-theme">
   <header>
@@ -46,32 +45,22 @@
   </header>
   <main>
     <div class="conversion-container">
-
       <!-- Sekme Alanı -->
       <div class="tabs">
         <!-- 1. Sekme (varsayılan aktif) -->
         <div class="tab active" id="tabPdfToPptx" data-type="pdf_to_pptx">
           <span class="tab-text">
-            <span class="old-color">
-              {{ langData[currentLang].tabPdfToPptx if langData and currentLang else "PDF › PPTX" }}
-            </span>
-            <span class="new-color">
-              {{ langData[currentLang].tabPdfToPptx if langData and currentLang else "PDF › PPTX" }}
-            </span>
+            <span class="old-color" data-lang-key="tabPdfToPptx">PDF › PPTX</span>
+            <span class="new-color" data-lang-key="tabPdfToPptx">PDF › PPTX</span>
           </span>
         </div>
         <!-- 2. Sekme -->
         <div class="tab" id="tabPptxToPdf" data-type="pptx_to_pdf">
           <span class="tab-text">
-            <span class="old-color">
-              {{ langData[currentLang].tabPptxToPdf if langData and currentLang else "PPTX › PDF" }}
-            </span>
-            <span class="new-color">
-              {{ langData[currentLang].tabPptxToPdf if langData and currentLang else "PPTX › PDF" }}
-            </span>
+            <span class="old-color" data-lang-key="tabPptxToPdf">PPTX › PDF</span>
+            <span class="new-color" data-lang-key="tabPptxToPdf">PPTX › PDF</span>
           </span>
         </div>
-
         <!-- Alt çizgi (indicator) -->
         <span class="tab-indicator"></span>
       </div>
@@ -84,33 +73,31 @@
         <div class="upload-icon">
           <span class="material-icons">upload</span>
         </div>
-        <h3 class="upload-text" id="uploadText">
-          {{ langData[currentLang].uploadText if langData and currentLang else "Drag or select your PDF file" }}
+        <h3 class="upload-text" id="uploadText" data-lang-key="uploadText">
+          Drag or select your PDF file
         </h3>
-        <p class="upload-subtext" id="uploadSubtext">
-          {{ langData[currentLang].uploadSubtext if langData and currentLang else "Maximum file size: 100MB" }}
+        <p class="upload-subtext" id="uploadSubtext" data-lang-key="uploadSubtext">
+          Maximum file size: 100MB
         </p>
         <input type="file" id="fileInput" class="file-input" multiple>
       </div>
       <div id="fileList"></div>
 
       <!-- Dönüştür / İndir Butonu -->
-      <button id="startConvertBtn" class="btn" disabled style="display:block; margin: 0 auto;">
-        <!-- JS ile metin güncelleniyor -->
+      <button id="startConvertBtn" class="btn" disabled style="display:block; margin: 0 auto;" data-lang-key="uploadButton">
+        Upload a file
       </button>
-
     </div>
   </main>
   <footer>
     <div class="footer-content">
       <a href="https://github.com/SirCrownguard/Converty-Web" target="_blank" class="github-link">
-        <img src=GitHub_Logo.svg alt=Source Code class=github-icon style=height:30px; width:auto;>
+        <img src=GitHub_Logo.svg alt="Source Code" class="github-icon" style="height:30px; width:auto;">
       </a>
       <p>© 2025 Converty</p>
     </div>
   </footer>
-
-  <!-- JS Dosyası -->
+  <!-- JavaScript dosyası -->
   <script src=script.js></script>
 </body>
 </html>
