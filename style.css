@@ -312,44 +312,69 @@ footer p {
   font-weight: bold;
 }
 @media (max-width: 768px) {
-  /* Header ve footer için daha küçük padding ve font boyutu */
-  header, footer {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
+  /* Header optimizasyonu */
+  header .logo {
+    font-size: 1.2rem;
+    gap: 0.3rem;
   }
-  /* İçerik alanı daha dar ekranlarda biraz daha dar olsun */
-  .conversion-container {
-    padding: 1rem;
-    margin: 1rem auto;
-    max-width: 95%;
+
+  /* Sekme metinlerini kısalt */
+  .tab-text {
+    font-size: 0.8rem;
+    white-space: normal;
   }
-  /* Sekme alanında, sekmelerin sığmaması durumunda alt satıra geçebilmesi için */
-  .tabs {
-    flex-wrap: wrap;
-  }
-  /* Sekme padding ve font boyutlarını küçültün */
-  .tab {
-    padding: 0.5rem;
-    font-size: 0.9rem;
-  }
-  /* Dosya yükleme alanındaki padding'i optimize edin */
+
+  /* Dosya yükleme alanı boyutu */
   .upload-area {
-    padding: 1.5rem;
+    padding: 1.5rem 1rem;
+    margin: 1rem 0;
   }
-  /* Görselleri responsive yapmak için */
-  img {
-    max-width: 100%;
-    height: auto;
+
+  .upload-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
   }
+
+  .upload-text {
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+  }
+
+  /* Footer düzeni */
+  .footer-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .github-icon {
+    width: 70px;
+    height: 30px;
+  }
+
+  /* Buton boyutu */
   .btn {
-    padding: 0.6rem 1rem;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    width: 100%;
   }
-  #tabPdfToPptx .old-color,
-  #tabPdfToPptx .new-color {
-    content: "PDF › PPTX"; /* pseudo-element kullanmak isterseniz, ya da JS ile kısaltabilirsiniz. */
+
+  /* Genel padding ayarları */
+  main {
+    padding: 1rem;
   }
-  #tabPptxToPdf .old-color,
-  #tabPptxToPdf .new-color {
-    content: "PPTX › PDF";
+
+  .conversion-container {
+    padding: 1.5rem 1rem;
+  }
+
+  /* Dosya listesi metin boyutu */
+  .file-name {
+    font-size: 0.9rem;
+  }
+  
+  /* Sekme indicator kalınlığı */
+  .tab-indicator {
+    height: 2px;
   }
 }
