@@ -306,7 +306,11 @@ document.addEventListener("DOMContentLoaded", () => {
     indicator.style.left = left + "px";
     indicator.style.width = width + "px";
   }
-
+  document.addEventListener("click", (e) => {
+    if (!languageSwitch.contains(e.target) && !languageMenu.contains(e.target)) {
+      languageMenu.classList.remove("active");
+    }
+  });
   // 5) Dil menüsündeki butonlar
   languageMenu.querySelectorAll("button").forEach(btn => {
     btn.addEventListener("click", () => {
