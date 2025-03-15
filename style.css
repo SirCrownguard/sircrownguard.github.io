@@ -379,7 +379,7 @@ footer p {
   /* DOSYA YÜKLEME ALANI */
   .upload-area {
     width: calc(100% - 10px);
-    height-top: 15px;
+    height-top: calc(100% - 10px);
     box-sizing: border-box;
   }
 
@@ -468,7 +468,7 @@ footer p {
     box-sizing: border-box;
   }
 }
-@media (hover: none) {
+(hover: none) {
   * {
     -webkit-tap-highlight-color: transparent !important;
   }
