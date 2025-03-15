@@ -21,7 +21,6 @@ body.dark-theme {
 html, body {
   height: 100%;
   overflow-x: hidden; /* Kaydırma çubuğu için sabit alan ayırır */
-  overflow-y: hidden;
   position: relative;
 }
 body {
@@ -329,9 +328,8 @@ footer p {
   font-weight: bold;
 }
 @media (max-width: 768px) {
-    body {
+  body {
     overflow-x: hidden !important;
-    overflow-y: hidden !important;
     width: 100vw;
   }
   
@@ -357,6 +355,23 @@ footer p {
     width: 16px !important;
     height: 16px !important;
     flex-shrink: 0;
+  }
+
+  /* KONTROL ELEMENTLERİ */
+  .controls {
+    gap: 5px;
+    flex-shrink: 0;
+    max-width: 30%;
+  }
+
+  .theme-switch, 
+  .language-switch {
+    padding: 3px;
+    transform: scale(0.9);
+  }
+
+  .controls .material-icons {
+    font-size: 16px !important;
   }
 
   /* SEKMELER */
@@ -421,6 +436,10 @@ footer p {
   }
 
   .conversion-container {
+    padding: 1.2rem 0.8rem !important;
+    margin: 0 8px;
+    min-height: auto;
+    width: calc(100% - 16px) !important;
     box-sizing: border-box;
   }
 
