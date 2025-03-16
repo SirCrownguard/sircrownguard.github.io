@@ -17,25 +17,28 @@ if (storedTheme) {
 function updateThemeIcon() {
   const themeIcon = document.getElementById("themeIcon");
   if (document.body.classList.contains("light-theme")) {
-    // Light theme aktifse, dark_mode ikonu göster (geçiş için)
+    // If light theme is active, show dark_mode icon for switching.
     themeIcon.textContent = "dark_mode";
   } else {
-    // Dark theme aktifse, light_mode ikonu göster
+    // If dark theme is active, show light_mode icon.
     themeIcon.textContent = "light_mode";
   }
 }
 updateThemeIcon();
 
-// Global değişkenler
-let uploadedFiles = []; // Her dosya: {file_id, original_name, safeName, size}
-let conversionIntervals = {}; // Her dosyanın ilerleme barı için interval saklanıyor.
+// Global variables
+let uploadedFiles = []; // Each file: {file_id, original_name, safeName, size}
+let conversionIntervals = {}; // Stores interval for each file's progress bar.
 let conversionComplete = false;
 let downloadTriggered = false;
 let downloadUrl = "";
 let conversionType = "pdf_to_pptx";
-let convertState = 1; // 1: deaktif, 2: aktif, 3: dönüştürülüyor, 4: indir, 5: indirme geri sayımı
+let convertState = 1; // 1: inactive, 2: ready, 3: converting, 4: download, 5: download countdown
 
-// Dil verileri
+// Global variable to track the previous active tab
+let previousActiveTab = null;
+
+// Language data
 let currentLang = "en";
 const langData = {
   tr: {
@@ -160,7 +163,7 @@ const langData = {
   }
 };
 
-// Dil seçimi
+// Set initial language based on session or browser
 if (sessionStorage.getItem("selectedLanguage") && langData[sessionStorage.getItem("selectedLanguage")]) {
   currentLang = sessionStorage.getItem("selectedLanguage");
 } else {
@@ -170,11 +173,11 @@ if (sessionStorage.getItem("selectedLanguage") && langData[sessionStorage.getIte
   }
 }
 
-// UI güncelleme fonksiyonları
+// UI update functions
 function updateLanguage(lang) {
   currentLang = lang;
   
-  // 1. Tüm data-lang-key özellikli elementleri güncelle
+  // Update all elements with data-lang-key attribute
   document.querySelectorAll('[data-lang-key]').forEach(element => {
     const key = element.getAttribute('data-lang-key');
     if (langData[lang] && langData[lang][key]) {
@@ -182,13 +185,13 @@ function updateLanguage(lang) {
     }
   });
 
-  // 2. Özel durumlar (sekme animasyonu)
+  // Update indicator position for active tab after language change (in case width changes)
   const activeTab = document.querySelector(".tab.active");
   requestAnimationFrame(() => {
     moveIndicator(activeTab);
   });
 
-  // 3. Buton durumu
+  // Update button state based on file uploads and conversion status
   if (uploadedFiles.length === 0) {
     updateConvertButton(1);
   } else if (!conversionComplete) {
@@ -197,10 +200,10 @@ function updateLanguage(lang) {
     updateConvertButton(4);
   }
 
-  // 4. Sonuç sayfası metinleri
+  // Update result page texts
   updateResultPageText();
 
-  // 5. SessionStorage'a kaydet
+  // Save language preference in sessionStorage
   sessionStorage.setItem("selectedLanguage", lang);
 }
 
@@ -238,23 +241,23 @@ function formatFileSize(bytes) {
   else return (bytes / (1024 * 1024)).toFixed(1) + " MB";
 }
 
-// Dönüştürme buton modlarını güncelleyen fonksiyon
+// Update conversion button state based on the mode
 function updateConvertButton(state, extraData) {
   convertState = state;
   switch(state) {
-    case 1: // Deaktif: Dosya yüklenmedi
+    case 1: // Inactive: No file uploaded
       startConvertBtn.textContent = langData[currentLang].uploadButton;
       startConvertBtn.disabled = true;
       break;
-    case 2: // Aktif: Dönüştürmeye hazır
+    case 2: // Active: Ready to convert
       startConvertBtn.textContent = langData[currentLang].readyConvert;
       startConvertBtn.disabled = false;
       break;
-    case 3: // Dönüştürülüyor
+    case 3: // Converting
       startConvertBtn.textContent = langData[currentLang].convertingText;
       startConvertBtn.disabled = true;
       break;
-    case 4: // İndir modu
+    case 4: // Download mode
       if (uploadedFiles.length === 1) {
         startConvertBtn.textContent = langData[currentLang].downloadBtn + " (" + formatFileSize(uploadedFiles[0].size) + ")";
       } else {
@@ -262,7 +265,7 @@ function updateConvertButton(state, extraData) {
       }
       startConvertBtn.disabled = false;
       break;
-    case 5: // İndirme geri sayımı
+    case 5: // Download countdown
       startConvertBtn.textContent = langData[currentLang].downloadCountdown + " " + extraData + " " + langData[currentLang].seconds;
       startConvertBtn.disabled = true;
       break;
@@ -273,7 +276,21 @@ function updateConvertButton(state, extraData) {
   }, 150);
 }
 
-// Elemanlar
+// Function to set the new color animation on a tab.
+// (Bu fonksiyon artık kullanılmayacak, istenen etki için katmanlı animasyon yerine tek blok renk geçişi uygulanacak.)
+function setNewColorAnimation(newTab) {
+  const newColor = newTab.querySelector('.new-color');
+  if (!newColor || !previousActiveTab) return;
+  const tabs = Array.from(document.querySelectorAll(".tab"));
+  const prevIndex = tabs.indexOf(previousActiveTab);
+  const newIndex = tabs.indexOf(newTab);
+  newColor.classList.remove("ltr", "rtl", "animate");
+  newColor.classList.add(newIndex > prevIndex ? "ltr" : "rtl");
+  void newColor.offsetWidth;
+  newColor.classList.add("animate");
+}
+
+// Element references
 const languageSwitch = document.getElementById("languageSwitch");
 const languageMenu = document.getElementById("languageMenu");
 const themeSwitch = document.getElementById("themeSwitch");
@@ -282,131 +299,79 @@ const tabPptxToPdf = document.getElementById("tabPptxToPdf");
 const fileInput = document.getElementById("fileInput");
 const startConvertBtn = document.getElementById("startConvertBtn");
 
-// Dil menüsü için: languageSwitch'a tıklandığında menüyü toggle et
-document.getElementById("languageSwitch").addEventListener("click", (e) => {
+// Toggle language menu when languageSwitch is clicked
+languageSwitch.addEventListener("click", (e) => {
   e.stopPropagation();
-  const menu = document.getElementById("languageMenu");
-  menu.classList.toggle("active"); // Aç/kapa
+  languageMenu.classList.toggle("active");
 });
+
+// Merge all initialization and event listener attachments in one DOMContentLoaded block.
 document.addEventListener("DOMContentLoaded", () => {
-  // 1) Sayfa ilk yüklendiğinde dil ayarını yap
+  // Initialize language and indicator
   updateLanguage(currentLang);
   const tabs = document.querySelectorAll(".tab");
   const initialActive = document.querySelector(".tab.active");
   moveIndicator(initialActive);
+  previousActiveTab = initialActive;
 
-
-  // 2) Sekme (tab) ve indicator değişkenlerini al
-  const indicator = document.querySelector(".tab-indicator");
-
-  // 3) İlk yüklemede aktif sekmeye göre indicator'ı konumlandır
-  moveIndicator(initialActive);
-
-  // 4) Sekme tıklanınca aktiflik değişsin ve indicator kaydırılsın
+  // Attach tab click event listener (single handler)
   tabs.forEach(tab => {
     tab.addEventListener("click", () => {
-      if (tab.classList.contains("active")) return; // Zaten aktifse geç
-      const oldActive = document.querySelector(".tab.active");
-      if (oldActive) {
-        oldActive.classList.remove("active");
+      if (tab.classList.contains("active")) return;
+      
+      // Reset conversion UI and update conversion parameters
+      resetConversionUI();
+      if (tab.id === "tabPdfToPptx") {
+        conversionType = "pdf_to_pptx";
+        fileInput.accept = ".pdf";
+      } else if (tab.id === "tabPptxToPdf") {
+        conversionType = "pptx_to_pdf";
+        fileInput.accept = ".pptx";
       }
-      tab.classList.add("active");
-      moveIndicator(document.querySelector(".tab.active"));
-    });
-  });
-
-  // Indicator'ı soldan sağa kaydıran fonksiyon
-  function moveIndicator(activeTab) {
-    if (!activeTab || !indicator) return;
-    const left = activeTab.offsetLeft;
-    const width = activeTab.offsetWidth;
-    indicator.style.left = left + "px";
-    indicator.style.width = width + "px";
-  }
-  // 5) Dil menüsündeki butonlar
-  languageMenu.querySelectorAll("button").forEach(btn => {
-    btn.addEventListener("click", () => {
-      let selected = btn.getAttribute("data-lang");
-      sessionStorage.setItem("selectedLanguage", selected);
-
-      // Dil güncelle
-      updateLanguage(selected);
-      languageMenu.classList.remove("active");
-
-      // Metinler değiştiyse sekme genişliği değişebilir;
-      // o yüzden indicator'ı tekrar güncelle
-      const activeTab = document.querySelector(".tab.active");
-      moveIndicator(activeTab);
-    });
-  });
-
-  tabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-      if (tab.classList.contains("active")) return; // Zaten aktifse geç
+      
+      // Update active tab
       const oldActive = document.querySelector(".tab.active");
       if (oldActive) {
         oldActive.classList.remove("active");
       }
       tab.classList.add("active");
       moveIndicator(tab);
+      previousActiveTab = tab;
+      
+      // Recalculate texts and indicator in case of width changes
+      updateLanguage(currentLang);
     });
   });
-  
-});
-// DOM yüklendiğinde çalışacak diğer olaylar
-document.addEventListener("DOMContentLoaded", () => {
-  // Sayfa ilk yüklendiğinde dil ayarını yap
-  updateLanguage(currentLang);
-  
-  // Eğer kaydedilmiş dil varsa, ilgili butonu görsel olarak seçili yap
+
+  // Set initial selected language button
   const savedLangButton = languageMenu.querySelector(`button[data-lang="${currentLang}"]`);
   if (savedLangButton) {
     savedLangButton.classList.add("selected");
   }
 
-  const tabs = document.querySelectorAll(".tab");
-  const initialActive = document.querySelector(".tab.active");
-  moveIndicator(initialActive);
-
-  // Sekme (tab) olayları ve indicator ayarı
-  const indicator = document.querySelector(".tab-indicator");
-  tabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-      if (tab.classList.contains("active")) return;
-      const oldActive = document.querySelector(".tab.active");
-      if (oldActive) {
-        oldActive.classList.remove("active");
-      }
-      tab.classList.add("active");
-      moveIndicator(tab);
-    });
-  });
-
-  // Dil menüsündeki butonlar: tıklandığında dil güncelle, menüyü kapat ve seçimi görsel olarak işaretle
+  // Attach language menu button event listeners
   languageMenu.querySelectorAll("button").forEach(btn => {
     btn.addEventListener("click", () => {
       let selected = btn.getAttribute("data-lang");
       sessionStorage.setItem("selectedLanguage", selected);
       updateLanguage(selected);
       languageMenu.classList.remove("active");
-      // Tüm butonlardan 'selected' sınıfını kaldırıp, tıklanan butona ekle
       languageMenu.querySelectorAll("button").forEach(b => b.classList.remove("selected"));
       btn.classList.add("selected");
-
       const activeTab = document.querySelector(".tab.active");
       moveIndicator(activeTab);
     });
   });
 });
 
-// Menü dışında bir yere tıklandığında menüyü kapat
+// Close language menu when clicking outside
 document.addEventListener("click", (e) => {
   if (!languageSwitch.contains(e.target) && !languageMenu.contains(e.target)) {
     languageMenu.classList.remove("active");
   }
 });
 
-// Tema değiştirme olayı
+// Theme switching event
 themeSwitch.addEventListener("click", () => {
   document.body.classList.toggle("dark-theme");
   document.body.classList.toggle("light-theme");
@@ -415,7 +380,7 @@ themeSwitch.addEventListener("click", () => {
   updateThemeIcon();
 });
 
-// Sekme (tab) değiştirme ve dosya input güncelleme
+// Update conversion UI when switching tabs and file input type
 function resetConversionUI() {
   fileInput.value = "";
   uploadedFiles = [];
@@ -443,7 +408,7 @@ tabPptxToPdf.addEventListener("click", () => {
   moveIndicator(document.querySelector(".tab.active"));
 });
 
-// Drag & Drop desteği
+// Drag & Drop support
 const uploadArea = document.getElementById("uploadArea");
 uploadArea.addEventListener("dragover", (e) => {
   e.preventDefault();
@@ -460,7 +425,7 @@ uploadArea.addEventListener("drop", (e) => {
   handleFileSelection();
 });
 
-// Dosya seçimi ve liste gösterimi
+// File selection and list display
 function handleFileSelection() {
   const files = fileInput.files;
   for (const file of files) {
@@ -539,10 +504,10 @@ function handleFileSelection() {
 }
 fileInput.addEventListener("change", handleFileSelection);
 
-// Buton tıklama olayını mod durumuna göre yönlendiriyoruz.
+// Button click handling based on mode
 startConvertBtn.addEventListener("click", () => {
   if (convertState === 2) {
-    // Dönüştürme işlemini başlat (aktif moddan dönüştürülüyor moduna geçiş)
+    // Start conversion (transition from ready to converting)
     updateConvertButton(3);
     const fileItems = document.querySelectorAll(".file-item");
     fileItems.forEach(item => {
@@ -599,7 +564,7 @@ startConvertBtn.addEventListener("click", () => {
       alert(langData[currentLang].error + " " + err.message);
     });
   } else if (convertState === 4) {
-    // İndir modunda, geri sayım başlasın
+    // In download mode, start countdown
     if (downloadTriggered) return;
     downloadTriggered = true;
     let count = 5;
