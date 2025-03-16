@@ -410,9 +410,12 @@ footer p {
     transform: scaleY(0);
     transform-origin: top right;
     transition: transform 0.2s ease-out, opacity 0.2s ease-out;
-    position: absolute;
-    top: 100%;
-    right: 0;
+    position: fixed;
+    top: 55px;
+    right: 10px;
+    width: auto;
+    max-width: 85px;
+    overflow: hidden;
     background-color: var(--card-light);
     border: 1px solid var(--border);
     border-radius: 4px;
