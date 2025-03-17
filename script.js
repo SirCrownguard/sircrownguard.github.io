@@ -41,26 +41,6 @@ let previousActiveTab = null;
 // Language data
 let currentLang = "en";
 const langData = {
-  tr: {
-    tabPdfToPptx: "PDF › PPTX",
-    tabPptxToPdf: "PPTX › PDF",
-    uploadButton: "Dosya yükleyiniz",
-    uploadText: "PDF dosyanızı sürükleyin veya seçin",
-    uploadSubtext: "Maksimum dosya boyutu: 100MB",
-    noFileAlert: "Lütfen geçerli dosya seçiniz.",
-    convertBtn: "Dönüştür",
-    readyConvert: "Dönüştürmeye Hazır",
-    convertingText: "Dönüştürülüyor...",
-    downloadBtn: "İndir",
-    downloadCountdown: "İndirme",
-    seconds: "saniye",
-    resultThankYou: "Converty'yi tercih ettiğiniz için teşekkür ederiz!",
-    resultConversionComplete: "Dönüştürme işleminiz tamamlandı.",
-    resultDownloadInstruction: "Eğer indirme başlamadıysa <span class='link' id='downloadLink'>buraya</span> tıklayın.",
-    resultConvertAgain: "Yeniden dönüştür",
-    resultRedirecting: "Ana sayfaya yönlendiriliyorsunuz, {count} saniye kaldı...",
-    zipNotFoundError: "ZIP dosya adı alınamadı:"
-  },
   en: {
     tabPdfToPptx: "PDF › PPTX",
     tabPptxToPdf: "PPTX › PDF",
@@ -80,6 +60,26 @@ const langData = {
     resultConvertAgain: "Convert again",
     resultRedirecting: "Redirecting to homepage in {count} second(s)...",
     zipNotFoundError: "ZIP file name could not be retrieved:"
+  },
+  tr: {
+    tabPdfToPptx: "PDF › PPTX",
+    tabPptxToPdf: "PPTX › PDF",
+    uploadButton: "Dosya yükleyiniz",
+    uploadText: "PDF dosyanızı sürükleyin veya seçin",
+    uploadSubtext: "Maksimum dosya boyutu: 100MB",
+    noFileAlert: "Lütfen geçerli dosya seçiniz.",
+    convertBtn: "Dönüştür",
+    readyConvert: "Dönüştürmeye Hazır",
+    convertingText: "Dönüştürülüyor...",
+    downloadBtn: "İndir",
+    downloadCountdown: "İndirme",
+    seconds: "saniye",
+    resultThankYou: "Converty'yi tercih ettiğiniz için teşekkür ederiz!",
+    resultConversionComplete: "Dönüştürme işleminiz tamamlandı.",
+    resultDownloadInstruction: "Eğer indirme başlamadıysa <span class='link' id='downloadLink'>buraya</span> tıklayın.",
+    resultConvertAgain: "Yeniden dönüştür",
+    resultRedirecting: "Ana sayfaya yönlendiriliyorsunuz, {count} saniye kaldı...",
+    zipNotFoundError: "ZIP dosya adı alınamadı:"
   },
   zh: {
     tabPdfToPptx: "PDF › PPTX",
