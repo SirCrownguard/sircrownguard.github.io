@@ -10,7 +10,7 @@ from pdf2image import convert_from_path
 from pptx import Presentation
 from werkzeug.utils import secure_filename  # For sanitizing filenames
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="assets")
 
 # Set folders for uploads and converted files.
 UPLOAD_FOLDER = "uploads"
@@ -259,6 +259,21 @@ def download(filename):
         abort(404)
     converted_tracking[filename] = time.time()
     return send_file(file_path, as_attachment=True)
+
+# Yeni eklenen: HTML yanıtları için dinamik Content-Language header'ını ayarlayan after_request fonksiyonu.
+@app.after_request
+def set_content_language(response):
+    # Yalnızca HTML içeriğine sahip yanıtlar için uygulanır.
+    if response.content_type.startswith('text/html'):
+        # Öncelikle çerezden veya URL parametresinden dil bilgisi alınmaya çalışılır.
+        lang = request.cookies.get('lang')
+        if not lang:
+            lang = request.args.get('lang')
+        # Eğer çerez veya URL parametresi yoksa, Accept-Language üzerinden en uygun dil belirlenir.
+        if not lang:
+            lang = request.accept_languages.best_match(['tr', 'zh', 'en', 'pt', 'hi', 'es']) or 'en'
+        response.headers['Content-Language'] = lang
+    return response
 
 if __name__ == "__main__":
     app.run(debug=True)
