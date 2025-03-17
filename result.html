@@ -9,7 +9,8 @@
   <!-- Material Icons -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <!-- External CSS -->
-  <link rel="stylesheet" href="style.css">
+  <link rel=default.css>
+  <link rel=responsive.css>
 </head>
 <body class="light-theme">
   <header>
@@ -32,11 +33,11 @@
         <span class="material-icons" id="themeIcon">dark_mode</span>
       </div>
       <div class="language-menu" id="languageMenu">
-        <button data-lang="tr">Türkçe</button>
         <button data-lang="en">English</button>
         <button data-lang="zh">中文</button>
         <button data-lang="es">Español</button>
         <button data-lang="pt">Português</button>
+        <button data-lang="tr">Türkçe</button>
         <button data-lang="hi">हिन्दी</button>
       </div>
     </div>
@@ -57,7 +58,7 @@
     © 2025 Converty
   </footer>
 
-  <script src="script.js"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
   <script>
     if (typeof updateResultPageText === "function") {
       updateResultPageText();
