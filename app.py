@@ -10,7 +10,7 @@ from pdf2image import convert_from_path
 from pptx import Presentation
 from werkzeug.utils import secure_filename  # For sanitizing filenames
 
-app = Flask(__name__, static_folder="assets")
+app = Flask(__name__)
 
 # Set folders for uploads and converted files.
 UPLOAD_FOLDER = "uploads"
