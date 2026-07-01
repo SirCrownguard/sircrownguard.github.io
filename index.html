@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Doğrusal Mesafe Haritası</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            width: 100vw;
+            height: 100vh;
+        }
+        .info-box {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            display: none;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+    <div id="info" class="info-box">Mesafe hesaplanıyor...</div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <script>
+        // Haritayı başlat (Varsayılan olarak Türkiye merkezli)
+        const map = L.map('map').setView([39.0, 35.0], 6);
+
+        // OpenStreetMap katmanını ekle
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        let userLocation = null;
+        let userMarker = null;
+        let targetMarker = null;
+        let polyline = null;
+        const infoBox = document.getElementById('info');
+
+        // Tarayıcıdan kullanıcının konumunu iste ve haritayı o noktaya odakla
+        map.locate({setView: true, maxZoom: 15});
+
+        // Konum başarıyla bulunduğunda çalışacak olay
+        map.on('locationfound', function(e) {
+            userLocation = e.latlng;
+            
+            // Kullanıcı konumuna bir işaretçi (marker) ekle
+            userMarker = L.marker(userLocation).addTo(map)
+                .bindPopup("Şu anki konumunuz.")
+                .openPopup();
+        });
+
+        // Konum bulunamadığında veya izin verilmediğinde çalışacak olay
+        map.on('locationerror', function(e) {
+            alert("Konumunuza erişilemedi. Lütfen cihazınızın veya tarayıcınızın konum servislerine izin verdiğinden emin olun.");
+        });
+
+        // Haritada herhangi bir yere tıklandığında çalışacak olay
+        map.on('click', function(e) {
+            // Kullanıcı konumu henüz alınmadıysa işlemi durdur
+            if (!userLocation) {
+                alert("Önce konumunuzun tespit edilmesi gerekiyor. Lütfen bekleyin veya konum erişimine izin verin.");
+                return;
+            }
+
+            const targetLocation = e.latlng;
+
+            // Önceki hedef işaretçisi varsa haritadan kaldır
+            if (targetMarker) {
+                map.removeLayer(targetMarker);
+            }
+            // Önceki çizgi varsa haritadan kaldır
+            if (polyline) {
+                map.removeLayer(polyline);
+            }
+
+            // Tıklanan yere yeni işaretçi ekle
+            targetMarker = L.marker(targetLocation).addTo(map);
+
+            // Kullanıcı konumu ile tıklanan yer arasına doğrusal çizgi (polyline) ekle
+            polyline = L.polyline([userLocation, targetLocation], {
+                color: 'red',
+                weight: 3,
+                opacity: 0.7,
+                dashArray: '10, 10' // Kesik çizgi görünümü
+            }).addTo(map);
+
+            // İki nokta arasındaki mesafeyi hesapla (metre cinsinden döndürür)
+            const distanceInMeters = userLocation.distanceTo(targetLocation);
+            const distanceInKm = (distanceInMeters / 1000).toFixed(2);
+
+            // Mesafeyi bilgi kutusunda göster
+            infoBox.style.display = 'block';
+            infoBox.innerHTML = `Mesafe: <strong>${distanceInKm} km</strong>`;
+
+            // Çizilen çizginin ekrana tam sığması için harita sınırlarını güncelle
+            map.fitBounds(polyline.getBounds(), { padding: [50, 50] });
+        });
+    </script>
+</body>
+</html>
