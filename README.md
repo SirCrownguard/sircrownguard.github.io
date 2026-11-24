@@ -22,9 +22,9 @@ Ardından tarayıcıda `http://localhost:8080` adresini açın. Dosyayı doğrud
 
 ## GitHub Pages
 
-Yayın kaynağı: `main` dalı, `/(root)` klasörü. Tüm yerel dosya yolları göreli olduğu için proje alt dizini desteklenir.
+Yayın kaynağı: `main` dalı, `/(root)` klasörü. Site, `SirCrownguard/sircrownguard.github.io` deposundan hesabın ana Pages adresinde yayımlanır.
 
-Beklenen adres: https://sircrownguard.github.io/escv.github.io/
+Beklenen adres: https://sircrownguard.github.io/
 
 X gönderileri X’in resmî gömme betiğiyle yüklenir. X yüklenemezse gönderiye giden önizleme bağlantısı görünür.
 
