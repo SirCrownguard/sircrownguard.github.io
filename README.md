@@ -18,7 +18,6 @@ Ardından tarayıcıda `http://localhost:8080` adresini açın. Dosyayı doğrud
 - `assets/css/site.css`: Responsive yerleşim ve görsel tasarım.
 - `assets/js/app.js`: Gezinme, otomasyon ayrıntısı, döngüsel carousel ve X gönderileri.
 - `assets/documents/Ertugrul-Saglam-CV.pdf`: Güncel, sabit sayfa düzenli A4 özgeçmiş.
-- `assets/vendor/pdfjs/`: CV ve sertifikaları tarayıcıda açan [PDF.js 6.5.438](https://github.com/mozilla/pdf.js/releases/tag/v6.5.438) (legacy, Apache-2.0). Bu kopyada Türkçe ve İngilizce çeviriler bulunur. Modül dosyalarında, Windows’ta yerel HTTP sunucusunun doğru içerik türünü vermesi için `.js` uzantısı kullanılır. PDF.js lisansı aynı klasörde yer alır.
 - `assets/vendor/`: MD3E Web 1.0.14 ve yerel font dosyaları.
 
 ## GitHub Pages
