@@ -1,4 +1,20 @@
 import '../vendor/md3e-web.js';
+
+// Some mobile browsers download PDFs when navigating directly to the file.
+const mobileDocumentViewer =
+ navigator.userAgentData?.mobile ||
+ /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+ (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+if (mobileDocumentViewer) {
+ for (const button of document.querySelectorAll('#cv-view, [data-certificate]')) {
+  const pdf = new URL(button.getAttribute('href'), document.baseURI);
+  const viewer = new URL('../vendor/pdfjs/web/viewer.html', import.meta.url);
+  viewer.searchParams.set('file', pdf.pathname + pdf.search);
+  button.setAttribute('href', viewer.href);
+ }
+}
+
 const detailButton=document.getElementById('automation-detail');
 const detailPanel=document.getElementById('automation-details');
 const detailInner=detailPanel.querySelector('.automation-expand-inner');

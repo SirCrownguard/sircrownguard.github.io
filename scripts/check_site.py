@@ -26,6 +26,7 @@ assert 'localhost' not in page and 'C:\\Users' not in page
 assert 'Portfolyo taslağı' not in page
 p=Links();p.feed(page)
 for url in p.refs:check_url(url,ROOT)
+check_url('assets/vendor/pdfjs/web/viewer.html',ROOT)
 documents={
  'cv-view':'Ertugrul-Saglam-CV.pdf',
  'certificate-0':'certificate-0.pdf',
