@@ -1,5 +1,4 @@
 import '../vendor/md3e-web.js';
-const DOCUMENTS={"cv": "./assets/documents/Ertugrul-Saglam-CV.pdf?v=md3e-expressive-2", "certificate-0": "./assets/documents/certificate-0.pdf", "certificate-1": "./assets/documents/certificate-1.pdf", "certificate-2": "./assets/documents/certificate-2.pdf"};
 const detailButton=document.getElementById('automation-detail');
 const detailPanel=document.getElementById('automation-details');
 const detailInner=detailPanel.querySelector('.automation-expand-inner');
@@ -10,10 +9,6 @@ function syncDetail(){detailPanel.style.height=detailOpen?`${detailInner.getBoun
 detailButton.addEventListener('click',()=>{detailOpen=!detailOpen;detailPanel.inert=!detailOpen;detailButton.setAttribute('aria-expanded',String(detailOpen));syncDetail();});
 new ResizeObserver(()=>{if(detailOpen)syncDetail();}).observe(detailInner);
 
-const PDF_FILES=Object.fromEntries(Object.entries(DOCUMENTS).map(([key,path])=>[key,new URL(path,document.baseURI).href]));
-function openPdf(url,filename,download=false){if(download){const link=document.createElement('a');link.href=url;link.download=filename;document.body.append(link);link.click();link.remove();}else window.open(url,'_blank','noopener');}
-document.getElementById('cv-download').addEventListener('click',()=>openPdf(PDF_FILES.cv,'Ertugrul-Saglam-CV.pdf',true));
-for(const button of document.querySelectorAll('[data-certificate]'))button.addEventListener('click',()=>openPdf(PDF_FILES[button.dataset.certificate],button.dataset.certificate+'.pdf'));
 // MD3E's multi-aspect layout masks entering and leaving items on both edges.
 const cycleRows=new Map();
 const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');

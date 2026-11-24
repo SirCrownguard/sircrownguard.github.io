@@ -1,7 +1,7 @@
 """Validate local static-site references and the published CV, without dependencies."""
 from pathlib import Path
 from html.parser import HTMLParser
-from urllib.parse import urlsplit,unquote
+from urllib.parse import parse_qs,urlsplit,unquote
 import re,hashlib
 ROOT=Path(__file__).resolve().parents[1]
 class Links(HTMLParser):
@@ -23,10 +23,16 @@ assert 'localhost' not in page and 'C:\\Users' not in page
 assert 'Portfolyo taslağı' not in page
 p=Links();p.feed(page)
 for url in p.refs:check_url(url,ROOT)
+documents=set()
+for url in p.refs:
+ viewer=urlsplit(url)
+ if viewer.path.endswith('/pdfjs/web/viewer.html'):
+  pdf_url,=parse_qs(viewer.query)['file']
+  check_url(pdf_url,(ROOT/viewer.path).parent)
+  documents.add(Path(urlsplit(pdf_url).path).name)
+assert documents=={'Ertugrul-Saglam-CV.pdf','certificate-0.pdf','certificate-1.pdf','certificate-2.pdf'}
 for css in (ROOT/'assets').rglob('*.css'):
  for url in re.findall(r'url\(\s*[\"\x27]?([^\)\"\x27\s]+)',css.read_text(encoding='utf-8')):check_url(url,css.parent)
-app=(ROOT/'assets/js/app.js').read_text(encoding='utf-8')
-for url in re.findall(r'"(\./assets/documents/[^\"]+)"',app):check_url(url,ROOT)
 assert p.certificates==3
 assert {'baslangic','projeler','deneyim','yazilar','egitim','iletisim'}<=p.ids
 pdf=ROOT/'assets/documents/Ertugrul-Saglam-CV.pdf'

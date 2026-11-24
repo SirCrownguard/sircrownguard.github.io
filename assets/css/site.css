@@ -41,11 +41,9 @@ html{scroll-padding-top:126px}.nav{position:sticky;top:12px;z-index:40;height:88
 
 
 .moderation-story{--technopat-size:490px;--technopat-x:calc(100% + 170px);--technopat-y:115px;position:relative;isolation:isolate;overflow:hidden}
-.moderation-story>.technopat-watermark{inset:0;width:auto;height:auto;z-index:0;background:var(--md-sys-color-on-primary-container);mask:url('../media/89cf64ff6f379d99.svg') var(--technopat-x) var(--technopat-y)/var(--technopat-size) var(--technopat-size) no-repeat;-webkit-mask:url('../media/89cf64ff6f379d99.svg') var(--technopat-x) var(--technopat-y)/var(--technopat-size) var(--technopat-size) no-repeat}
+.moderation-story>.technopat-watermark{inset:0;width:auto;height:auto;z-index:0;opacity:.12;background:var(--md-sys-color-on-primary-container);mask:url('../media/89cf64ff6f379d99.svg') var(--technopat-x) var(--technopat-y)/var(--technopat-size) var(--technopat-size) no-repeat;-webkit-mask:url('../media/89cf64ff6f379d99.svg') var(--technopat-x) var(--technopat-y)/var(--technopat-size) var(--technopat-size) no-repeat}
 .moderation-text{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;flex:1;width:100%}
 .moderation-story .experience-date{background:transparent;border-radius:0;padding:15px 0 0;margin-left:0}
-.moderation-knockout{position:absolute;inset:0;z-index:2;padding:inherit;display:flex;pointer-events:none;color:var(--md-sys-color-primary-container);mask:url('../media/89cf64ff6f379d99.svg') var(--technopat-x) var(--technopat-y)/var(--technopat-size) var(--technopat-size) no-repeat;-webkit-mask:url('../media/89cf64ff6f379d99.svg') var(--technopat-x) var(--technopat-y)/var(--technopat-size) var(--technopat-size) no-repeat}
-.moderation-knockout .moderation-text,.moderation-knockout .experience-date,.moderation-knockout .technopat-logo{color:inherit!important}
 .moderation-story>.moderation-text>.technopat-logo{color:var(--md-sys-color-primary)}
 .book-cap{display:none}
 .proton-experience.proton-v5{background:transparent;padding:58px 38px 28px;gap:50px;align-items:center}
@@ -81,11 +79,24 @@ body>md-expressive-theme{display:block}.shell{padding-bottom:0}
 .library>.project-copy,.themes>.project-copy{align-self:stretch;padding:18px 8px 18px 14px;min-width:0}
 .themes>.project-copy .project-actions,.library>.project-copy .project-actions{margin-top:auto}
 .project.library .project-video,.project.themes .project-video{box-sizing:border-box;width:100%;height:640px;max-width:582px;padding:14px;border-radius:32px;overflow:hidden}
-.project-post-scroll{box-sizing:border-box;height:100%;overflow-y:auto;overflow-x:hidden;border-radius:20px;overscroll-behavior-y:contain;scrollbar-width:thin;scrollbar-color:#bdc9d0 transparent;scrollbar-gutter:stable}
+.project-post-scroll{box-sizing:border-box;height:100%;overflow-y:auto;overflow-x:hidden;border-radius:20px;scrollbar-width:thin;scrollbar-color:#bdc9d0 transparent;scrollbar-gutter:stable}
 .project-post-scroll:focus-visible{outline:3px solid var(--md-sys-color-primary);outline-offset:-3px}
 .project-video .x-video-mount{display:flex;justify-content:center;min-width:0;width:100%}
 .project-video .twitter-tweet,.project-video .twitter-video,.project-video iframe{max-width:100%!important;margin:0!important}
 .project-video .video-poster{height:100%;min-height:370px}
+
+/* A touch gesture stays with the scroller where it starts. Let the page own it. */
+@media (pointer: coarse) {
+  body .project.library .project-video,
+  body .project.themes .project-video {
+    height: auto;
+    overflow: clip;
+  }
+  .project-post-scroll {
+    height: auto;
+    overflow: visible;
+  }
+}
 
 /* The original wordmark is the section's background itself. */
 .proton-experience.proton-v5{position:relative;display:block;isolation:isolate;overflow:hidden;border-radius:0;background:transparent;min-height:330px;padding:0;margin-top:54px;--proton-art-size:100% auto;--proton-art-position:center center}
