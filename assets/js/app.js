@@ -1,5 +1,5 @@
 import '../vendor/md3e-web.js';
-const DOCUMENTS={"cv": "./assets/documents/Ertugrul-Saglam-CV.pdf?v=md3e-expressive", "certificate-0": "./assets/documents/certificate-0.pdf", "certificate-1": "./assets/documents/certificate-1.pdf", "certificate-2": "./assets/documents/certificate-2.pdf"};
+const DOCUMENTS={"cv": "./assets/documents/Ertugrul-Saglam-CV.pdf?v=md3e-expressive-2", "certificate-0": "./assets/documents/certificate-0.pdf", "certificate-1": "./assets/documents/certificate-1.pdf", "certificate-2": "./assets/documents/certificate-2.pdf"};
 const detailButton=document.getElementById('automation-detail');
 const detailPanel=document.getElementById('automation-details');
 const detailInner=detailPanel.querySelector('.automation-expand-inner');
